@@ -1,4 +1,4 @@
-package sample;
+package controllers;
 
 import javafx.scene.control.*;
 
@@ -9,7 +9,7 @@ import javafx.scene.control.*;
  * Date: 2018-09-12
  * Time: 9:56
  */
-public class Controller {
+public class Controller_portScanner {
     public MenuBar menuBar;
         public Menu menu_menu;
             public MenuItem menuItem_startScan;

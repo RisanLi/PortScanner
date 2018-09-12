@@ -11,7 +11,7 @@
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="637.0" prefWidth="676.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<AnchorPane prefHeight="637.0" prefWidth="676.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Controller_portScanner">
     <children>
         <RadioButton fx:id="radioButton_commonPort" layoutX="21.0" layoutY="106.0" mnemonicParsing="false" text="常见端口扫描">
             <toggleGroup>
