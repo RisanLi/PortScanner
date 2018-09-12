@@ -12,12 +12,12 @@
             <Font name="System Bold" size="24.0" />
          </font>
       </Label>
-      <Button fx:id="button_portScanner" layoutX="65.0" layoutY="107.0" mnemonicParsing="false" prefHeight="100.0" prefWidth="130.0" text="PortScanner">
+      <Button fx:id="button_portScanner" layoutX="65.0" layoutY="107.0" mnemonicParsing="false" onMouseClicked="#selectPortScanner" prefHeight="100.0" prefWidth="130.0" text="PortScanner">
          <font>
             <Font size="18.0" />
          </font>
       </Button>
-      <Button fx:id="button_sniffer" layoutX="262.0" layoutY="107.0" mnemonicParsing="false" prefHeight="100.0" prefWidth="130.0" text="Sniffer">
+      <Button fx:id="button_sniffer" layoutX="262.0" layoutY="107.0" mnemonicParsing="false" onMouseClicked="#selectSniffer" prefHeight="100.0" prefWidth="130.0" text="Sniffer">
          <font>
             <Font size="18.0" />
          </font>

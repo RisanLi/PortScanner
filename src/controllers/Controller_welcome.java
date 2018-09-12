@@ -1,12 +1,9 @@
 package controllers;
 
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,10 +16,11 @@ public class Controller_welcome {
     public Button button_portScanner;
     public Button button_sniffer;
 
-    public void selectPortScanner(Stage stage) throws IOException {
-        Parent portScanner = FXMLLoader.load(getClass().getResource("View_portScanner.fxml"));
-        Scene scene1 = new Scene(portScanner);
-        stage.setScene(scene1);
+    public void selectPortScanner(){
+        Main.stage.setScene(Main.portScannerScene);
     }
 
+    public void selectSniffer(){
+        Main.stage.setScene(Main.snifferScene);
+    }
 }
