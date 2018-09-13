@@ -4,7 +4,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
 <AnchorPane prefHeight="509.0" prefWidth="626.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Controller_sniffer">
    <children>
       <MenuBar fx:id="menu_menu" prefHeight="29.0" prefWidth="626.0">
@@ -37,10 +36,10 @@
       </TableView>
       <HBox layoutY="406.0" prefHeight="100.0" prefWidth="626.0">
          <children>
-            <Button mnemonicParsing="false" prefHeight="121.0" prefWidth="316.0" text="Button" />
-            <Button mnemonicParsing="false" prefHeight="129.0" prefWidth="312.0" text="Button" />
+            <Button fx:id="button_start" mnemonicParsing="false" prefHeight="121.0" prefWidth="316.0" text="Start" />
+            <Button fx:id="button_terminate" mnemonicParsing="false" prefHeight="129.0" prefWidth="312.0" text="Terminate" />
          </children>
       </HBox>
-      <TextField layoutY="272.0" prefHeight="135.0" prefWidth="626.0" />
+      <TextArea fx:id="textArea" editable="false" layoutY="272.0" prefHeight="139.0" prefWidth="626.0" />
    </children>
 </AnchorPane>

@@ -1,12 +1,10 @@
 package controllers;
 
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 
 /**
  * Created with IntelliJ IDEA.
- * User: Netzhang
+ * User: RisanLi
  * Description:
  * Date: 2018-09-12
  * Time: 16:27
@@ -19,4 +17,18 @@ public class Controller_sniffer {
     public TableColumn tableColumn_destination;
     public TableColumn tableColumn_protocal;
     public TableColumn tableColumn_data;
+    public TextArea textArea;
+    public Button button_start;
+    public Button button_terminate;
+
+    // 开启一个静态线程，能够让buttonStart和buttonTerminate控制
+    
+
+    public void buttonStart(){
+
+    }
+
+    public void buttonTerminate(){
+
+    }
 }
