@@ -1,8 +1,5 @@
 package controllers;
-
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
 
 /**
  * Created with IntelliJ IDEA.
