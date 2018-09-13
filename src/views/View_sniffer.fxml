@@ -1,10 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controllers.Controller_sniffer"
-            prefHeight="400.0" prefWidth="600.0">
 
+<AnchorPane prefHeight="509.0" prefWidth="626.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Controller_sniffer">
+   <children>
+      <MenuBar fx:id="menu_menu" prefHeight="29.0" prefWidth="626.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <TableView fx:id="tableview" layoutY="29.0" prefHeight="243.0" prefWidth="626.0">
+        <columns>
+          <TableColumn fx:id="tableColumn_time" minWidth="-Infinity" prefWidth="151.0" text="Time" />
+          <TableColumn fx:id="tableColumn_source" prefWidth="110.0" text="Source" />
+            <TableColumn fx:id="tableColumn_destination" prefWidth="110.0" text="Destination" />
+            <TableColumn fx:id="tableColumn_protocal" text="Protocal" />
+            <TableColumn fx:id="tableColumn_data" prefWidth="174.0" text="Data" />
+        </columns>
+      </TableView>
+      <HBox layoutY="406.0" prefHeight="100.0" prefWidth="626.0">
+         <children>
+            <Button mnemonicParsing="false" prefHeight="121.0" prefWidth="316.0" text="Button" />
+            <Button mnemonicParsing="false" prefHeight="129.0" prefWidth="312.0" text="Button" />
+         </children>
+      </HBox>
+      <TextField layoutY="272.0" prefHeight="135.0" prefWidth="626.0" />
+   </children>
 </AnchorPane>
