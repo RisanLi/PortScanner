@@ -1,11 +1,10 @@
 package controllers;
 
-import controllers.Controller_portScanner;
-import controllers.Controller_welcome;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -29,7 +28,9 @@ public class Main extends Application {
         Parent snifferRoot = snifferFxmlLoader.load();
         snifferScene = new Scene(snifferRoot);
 
+        stage.setTitle("网络课设-端口扫描工具");
         stage.setScene(welcomeScene);
+        stage.getIcons().add(new Image("file:"+System.getProperty("user.dir")+"\\images\\title.png"));
         stage.show();
     }
 

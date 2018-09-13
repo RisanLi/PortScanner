@@ -19,7 +19,7 @@ public class Controller_portScanner {
             public MenuItem menuItem_exit;
         public Menu menu_about;
             public MenuItem menuItem_author;
-            public MenuItem menuItem_contect;
+            public MenuItem menuItem_connect;
             public MenuItem menuItem_version;
             public MenuItem menuItem_help;
 

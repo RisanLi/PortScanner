@@ -43,7 +43,7 @@
                 <Menu fx:id="menu_about" mnemonicParsing="false" text="    关于    ">
                     <items>
                         <MenuItem fx:id="menuItem_author" mnemonicParsing="false" text=" 作者 " />
-                        <MenuItem fx:id="menuItem_contect" mnemonicParsing="false" text=" 联系方式 " />
+                        <MenuItem fx:id="menuItem_connect" mnemonicParsing="false" text=" 联系方式 " />
                         <MenuItem fx:id="menuItem_version" mnemonicParsing="false" text=" 版本 " />
                         <MenuItem fx:id="menuItem_help" mnemonicParsing="false" text=" 使用说明 " />
                     </items>
