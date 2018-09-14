@@ -7,11 +7,17 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Main extends Application {
     static Stage stage;
     static Scene welcomeScene;
     static Scene portScannerScene;
     static Scene snifferScene;
+
+    public static Map<String,Integer> map = new HashMap<String, Integer>();
+
     @Override
     public void start(Stage primaryStage) throws Exception{
         stage = primaryStage;
@@ -35,6 +41,9 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
+        map.put("TCP",1);
+        map.put("UDP",2);
+        map.put("ICMP",3);
         launch(args);
     }
 }

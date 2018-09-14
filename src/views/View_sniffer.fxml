@@ -25,21 +25,10 @@
           </Menu>
         </menus>
       </MenuBar>
-      <TableView fx:id="tableview" layoutY="29.0" prefHeight="243.0" prefWidth="626.0">
-        <columns>
-          <TableColumn fx:id="tableColumn_time" minWidth="-Infinity" prefWidth="151.0" text="Time" />
-          <TableColumn fx:id="tableColumn_source" prefWidth="110.0" text="Source" />
-            <TableColumn fx:id="tableColumn_destination" prefWidth="110.0" text="Destination" />
-            <TableColumn fx:id="tableColumn_protocal" text="Protocal" />
-            <TableColumn fx:id="tableColumn_data" prefWidth="174.0" text="Data" />
-        </columns>
-      </TableView>
-      <HBox layoutY="406.0" prefHeight="100.0" prefWidth="626.0">
-         <children>
-            <Button fx:id="button_start" mnemonicParsing="false" prefHeight="121.0" prefWidth="316.0" text="Start" />
-            <Button fx:id="button_terminate" mnemonicParsing="false" prefHeight="129.0" prefWidth="312.0" text="Terminate" />
-         </children>
-      </HBox>
-      <TextArea fx:id="textArea" editable="false" layoutY="272.0" prefHeight="139.0" prefWidth="626.0" />
+      <TextArea fx:id="textArea" editable="false" layoutY="24.0" prefHeight="358.0" prefWidth="626.0" />
+      <Button fx:id="button_start" layoutX="443.0" layoutY="444.0" mnemonicParsing="false" onMouseClicked="#buttonStart" prefHeight="64.0" prefWidth="184.0" text="Start" />
+      <Button fx:id="button_terminate" layoutX="443.0" layoutY="382.0" mnemonicParsing="false" onMouseClicked="#buttonTerminate" prefHeight="64.0" prefWidth="184.0" text="Terminate" />
+      <ChoiceBox fx:id="choiceBox" layoutX="104.0" layoutY="437.0" onMouseClicked="#setChoiceBox" prefWidth="150.0" />
+      <Label fx:id="label_packetType" layoutX="107.0" layoutY="414.0" prefHeight="23.0" prefWidth="143.0" text="请选择包类型" />
    </children>
 </AnchorPane>
