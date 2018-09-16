@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="476.0" prefWidth="711.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Controller_sniffer">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"  prefHeight="476.0" prefWidth="711.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Controller_sniffer">
    <children>
       <MenuBar fx:id="menu" prefHeight="31.0" prefWidth="711.0">
         <menus>
@@ -25,7 +25,7 @@
           </Menu>
         </menus>
       </MenuBar>
-      <TableView fx:id="tableview" editable="true" layoutY="31.0" prefHeight="295.0" prefWidth="711.0">
+      <TableView fx:id="tableView" layoutY="31.0" prefHeight="295.0" prefWidth="711.0">
         <columns>
           <TableColumn fx:id="tableColumn_time" prefWidth="125.0" text="时间" />
           <TableColumn fx:id="tableColumn_sourceIP" minWidth="7.0" prefWidth="180.0" text="源IP" />
@@ -34,10 +34,10 @@
             <TableColumn fx:id="tableColumn_length" prefWidth="111.0" text="长度" />
         </columns>
       </TableView>
-      <ComboBox fx:id="comboBox_net" layoutX="51.0" layoutY="365.0" onMouseClicked="#selectNet" prefWidth="150.0" promptText="           选择网卡" />
-      <Button fx:id="button_sourceIP" layoutX="544.0" layoutY="359.0" mnemonicParsing="false" onMouseClicked="#test" prefHeight="40.0" prefWidth="140.0" text="源IP" />
+      <ComboBox fx:id="comboBox_net" layoutX="51.0" layoutY="365.0" prefWidth="150.0" promptText="           选择网卡" onMouseClicked="#selectNet"/>
+      <Button fx:id="button_sourceIP" layoutX="544.0" layoutY="359.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="140.0" text="源IP" />
       <Button fx:id="button_destIP" layoutX="544.0" layoutY="395.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="140.0" text="目的IP" />
-      <Button fx:id="button_start" layoutX="336.0" layoutY="356.0" mnemonicParsing="false" onMouseClicked="#start" prefHeight="69.0" prefWidth="124.0" text="开始" />
-      <ComboBox fx:id="comboBox_protocol" layoutX="51.0" layoutY="421.0" onMouseClicked="#selectProtocol" prefWidth="150.0" promptText="           筛选协议" />
+      <Button fx:id="button_start" layoutX="336.0" layoutY="356.0" mnemonicParsing="false" prefHeight="69.0" prefWidth="124.0" text="开始" onMouseClicked="#start"/>
+      <ComboBox fx:id="comboBox_protocol" layoutX="51.0" layoutY="421.0" prefWidth="150.0" promptText="           筛选协议" onMouseClicked="#selectProtocol"/>
    </children>
 </AnchorPane>
