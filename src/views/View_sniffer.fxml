@@ -4,9 +4,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="509.0" prefWidth="626.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Controller_sniffer">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="476.0" prefWidth="711.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Controller_sniffer">
    <children>
-      <MenuBar fx:id="menu_menu" prefHeight="29.0" prefWidth="626.0">
+      <MenuBar fx:id="menu" prefHeight="31.0" prefWidth="711.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
@@ -25,10 +25,19 @@
           </Menu>
         </menus>
       </MenuBar>
-      <TextArea fx:id="textArea" editable="false" layoutY="24.0" prefHeight="358.0" prefWidth="626.0" />
-      <Button fx:id="button_start" layoutX="443.0" layoutY="444.0" mnemonicParsing="false" onMouseClicked="#buttonStart" prefHeight="64.0" prefWidth="184.0" text="Start" />
-      <Button fx:id="button_terminate" layoutX="443.0" layoutY="382.0" mnemonicParsing="false" onMouseClicked="#buttonTerminate" prefHeight="64.0" prefWidth="184.0" text="Terminate" />
-      <ChoiceBox fx:id="choiceBox" layoutX="104.0" layoutY="437.0" onMouseClicked="#setChoiceBox" prefWidth="150.0" />
-      <Label fx:id="label_packetType" layoutX="107.0" layoutY="414.0" prefHeight="23.0" prefWidth="143.0" text="请选择包类型" />
+      <TableView fx:id="tableview" editable="true" layoutY="31.0" prefHeight="295.0" prefWidth="711.0">
+        <columns>
+          <TableColumn fx:id="tableColumn_time" prefWidth="125.0" text="时间" />
+          <TableColumn fx:id="tableColumn_sourceIP" minWidth="7.0" prefWidth="180.0" text="源IP" />
+            <TableColumn fx:id="tableColumn_destIP" prefWidth="185.0" text="目的IP" />
+            <TableColumn fx:id="tableColumn_protocol" prefWidth="109.0" text="协议" />
+            <TableColumn fx:id="tableColumn_length" prefWidth="111.0" text="长度" />
+        </columns>
+      </TableView>
+      <ComboBox fx:id="comboBox_net" layoutX="51.0" layoutY="365.0" onMouseClicked="#selectNet" prefWidth="150.0" promptText="           选择网卡" />
+      <Button fx:id="button_sourceIP" layoutX="544.0" layoutY="359.0" mnemonicParsing="false" onMouseClicked="#test" prefHeight="40.0" prefWidth="140.0" text="源IP" />
+      <Button fx:id="button_destIP" layoutX="544.0" layoutY="395.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="140.0" text="目的IP" />
+      <Button fx:id="button_start" layoutX="336.0" layoutY="356.0" mnemonicParsing="false" onMouseClicked="#start" prefHeight="69.0" prefWidth="124.0" text="开始" />
+      <ComboBox fx:id="comboBox_protocol" layoutX="51.0" layoutY="421.0" onMouseClicked="#selectProtocol" prefWidth="150.0" promptText="           筛选协议" />
    </children>
 </AnchorPane>

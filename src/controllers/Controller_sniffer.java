@@ -1,17 +1,24 @@
 package controllers;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.MapValueFactory;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import jpcap.JpcapCaptor;
 import jpcap.PacketReceiver;
 import jpcap.packet.*;
 
+import javax.swing.table.DefaultTableModel;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.NetworkInterface;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static controllers.Main.map;
+import static controllers.Main.devices;
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,134 +28,276 @@ import static controllers.Main.map;
  * Time: 16:27
  */
 public class Controller_sniffer {
-    public MenuBar menu_menu;
-//    public TableView tableview;
-//    public TableColumn tableColumn_time;
-//    public TableColumn tableColumn_source;
-//    public TableColumn tableColumn_destination;
-//    public TableColumn tableColumn_protocal;
-//    public TableColumn tableColumn_data;
-    public TextArea textArea;
+
+    public Button button_sourceIP;
+    public Button button_destIP;
     public Button button_start;
-    public Button button_terminate;
-    public ChoiceBox choiceBox;
-    boolean stop;
-    public String s = "";
-    // 开启一个静态线程，能够让buttonStart和buttonTerminate控制
-    //将每个Captor放到独立线程中运行
-    public void  startCapThread(final JpcapCaptor jpcap ){
-        JpcapCaptor jp=jpcap;
-        java.lang.Runnable rnner= new Runnable(){         //创建线程
-            public void run(){
-                //使用接包处理器循环抓包
-                while(stop){
-                    jpcap.processPacket(1,new TestPacketReceiver(map.get(choiceBox.getValue())));
+    public TableView<tablerow> tableview;
+    public TableColumn<tablerow,String> tableColumn_time;
+    public TableColumn<tablerow,String> tableColumn_sourceIP;
+    public TableColumn<tablerow,String> tableColumn_destIP;
+    public TableColumn<tablerow,String> tableColumn_protocol;
+    public TableColumn<tablerow,String> tableColumn_length;
+    public ComboBox<String> comboBox_net;
+    public ComboBox<String> comboBox_protocol;
+
+    public void selectNet(){
+        comboBox_net.getItems().clear();
+        for(jpcap.NetworkInterface i : devices){ comboBox_net.getItems().add(i.name);}
+    }
+
+    public void selectProtocol(){
+        comboBox_protocol.getItems().addAll("TCP","UDP","ICMP");
+    }
+
+    public void start(){
+        jpcap.NetworkInterface captor = devices[comboBox_net.getSelectionModel().getSelectedIndex()];
+        String protocol = comboBox_protocol.getSelectionModel().getSelectedItem();
+        PacketCapture packetCapture = new PacketCapture(captor,protocol,tableview);
+        packetCapture.run();
+    }
+
+
+
+
+    class PacketCapture implements Runnable {
+
+        jpcap.NetworkInterface device;
+        TableView tableview;
+        String FilterMess = "";
+        ArrayList<Packet> packetlist = new ArrayList<Packet>();
+        PacketCapture(jpcap.NetworkInterface d, String protocol,TableView tv) {   //传入设备和协议名
+            this.device = d;
+            this.FilterMess = protocol;
+            this.tableview = tv;
+        }
+//        public void setTable(TableView tv){
+//            this.tableview = tv;
+//        }
+//        public void setFilter(String FilterMess){
+//            this.FilterMess = FilterMess;
+//        }
+        public void clearpackets(){
+            packetlist.clear();
+        }
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            Packet packet;
+            try {
+                JpcapCaptor captor = JpcapCaptor.openDevice(device, 65535,true, 20);
+                //System.out.println(device.name);
+                while(true){
+                    long startTime = System.currentTimeMillis();
+                    while (startTime + 600 >= System.currentTimeMillis()) {
+                        //captor.setFilter(FilterMess, true);
+                        packet = captor.getPacket();
+
+                        // 设置过滤器
+                        if(packet!=null&&TestFilter(packet)){       //TestFilter 检测包是否为ICMP，UDP，TCP
+                            //System.out.println(packet);
+                            packetlist.add(packet);
+                            showTable(packet);
+                        }
+                    }
+                    Thread.sleep(2000);
                 }
-//                jpcap.loopPacket(stop,new TestPacketReceiver(map.get(choiceBox.getValue())) );   //-1无限抓取包，抓包监听器获取包
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        };
-        new Thread(rnner).start();//启动抓包线程
-
-    }
-
-    public void setChoiceBox(){
-        choiceBox.setTooltip(new Tooltip("选择包类型"));
-
-        choiceBox.setItems(FXCollections.observableArrayList("TCP","UDP","ICMP"));
-    }
-
-    public void buttonStart() {
-        stop = true;
-        try {
-            //获取本机上的网络接口对象数组
-            final jpcap.NetworkInterface[] devices = JpcapCaptor.getDeviceList();
-            for (int i = 0; i < devices.length; i++) {
-                jpcap.NetworkInterface nc = devices[i];
-                //创建某个卡口上的抓取对象,最大为2000个
-                JpcapCaptor jpcap = JpcapCaptor.openDevice(nc, 5, true, 20);
-                startCapThread(jpcap);       //线程执行抓包
-                System.out.println("开始抓取第" + i + "个卡口上的数据");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-    }
-
-    public void buttonTerminate(){
-        stop = false;
-    }
-
-
-    class TestPacketReceiver  implements PacketReceiver {
-
-        public int model;
-
-        public TestPacketReceiver(int n) {
-            this.model = n;
+        //将抓到包的信息添加到列表
+        void showTable(Packet packet){
+            String[] rowData = getObj(packet);
+//            tablemodel.addRow(rowData);
+            ObservableList<tablerow> list = FXCollections.observableArrayList();
+//            tablerow tr = new tablerow(rowData[0],rowData[1],rowData[2],rowData[3],rowData[4]);
+            tablerow tr = new tablerow("1","2","3","4","5");
+            list.add(tr);
+            tableview.setItems(list);
+//            System.out.println("tessssssssssssssst :      "+rowData[0]+rowData[1]+rowData[2]);
         }
+        //其他类通过此方法获取Packet的列表
+        public ArrayList<Packet> getpacketlist(){
+            return packetlist;
+        }
+        //设置过滤规则
+        boolean TestFilter(Packet packet){
 
-        /**
-         * 实现的接包方法:
-         */
-        public void receivePacket(Packet packet) {
-            //Tcp包
-            if (packet instanceof jpcap.packet.TCPPacket && model == 1) {
-                TCPPacket p = (TCPPacket) packet;
-                s += "TCPPacket:| 目的ip及端口 " + p.dst_ip + ":" + p.dst_port
-                        + "|源ip及端口 " + p.src_ip + ":" + p.src_port
-                        + " |数据长度: " + p.len + "\n";
-                textArea.setText(s);
-                System.out.println(s);
-            }
-            //UDP包
-            else if (packet instanceof jpcap.packet.UDPPacket && model == 2) {
-                UDPPacket p = (UDPPacket) packet;
-                s += "UDPPacket:| 目的ip及端口 " + p.dst_ip + ":" + p.dst_port
-                        + "||源ip及端口 " + p.src_ip + ":" + p.src_port
-                        + " |数据长度: " + p.len+"\n";
-                textArea.setText(s);
-                System.out.println(s);
-            }
-            //ICMPPacket包
-            else if (packet instanceof jpcap.packet.ICMPPacket && model == 3) {
-                ICMPPacket p = (ICMPPacket) packet;
-                //ICMP包的路由链
-                String router_ip = "";
-                for (int i = 0; i < p.router_ip.length; i++) {
-                    router_ip += " " + p.router_ip[i].getHostAddress();
+            if(FilterMess.contains("ICMP")){
+                if(new PacketAnalyze(packet).packetClass().get("协议").equals("ICMP")){
+                    return true;
                 }
-                s += "@ @ @ ICMPPacket:| 路由IP: " + router_ip
-                        + " |redir_ip: " + p.redir_ip
-                        + " |最大传输单元: " + p.mtu
-                        + " |长度: " + p.len + "\n";
-                textArea.setText(s);
-                System.out.println(s);
             }
-            //ARP请求包
-            else if (packet instanceof jpcap.packet.ARPPacket && model == 4) {
-                ARPPacket p = (ARPPacket) packet;
-                //Returns the hardware address (MAC address) of the sender
-                Object saa = p.getSenderHardwareAddress();
-                Object taa = p.getTargetHardwareAddress();
-                s = "* * * ARPPacket:| 发送硬件地址： " + saa
-                        + "|目标硬件地址： " + taa
-                        + " |长度: " + p.len + "\n";
-                textArea.setText(s);
-                System.out.println(s);
-
+            else if(FilterMess.contains("UDP")){
+                if(new PacketAnalyze(packet).packetClass().get("协议").equals("UDP")){
+                    return true;
+                }
+            }else if(FilterMess.contains("TCP")){
+                System.out.println(packet);
+                if(new PacketAnalyze(packet).packetClass().get("协议").equals("TCP")){
+                    return true;
+                }
+            }else if(FilterMess.equals("")){
+                return true;
             }
-            //取得链路层数据头 :如果你想局网抓包或伪造数据包，嘿嘿
-            DatalinkPacket datalink = packet.datalink;
-            //如果是以太网包
-            if (datalink instanceof jpcap.packet.EthernetPacket) {
-                EthernetPacket ep = (EthernetPacket) datalink;
-                s += "  以太包: "
-                        + "|目的MAC: " + ep.getDestinationAddress()
-                        + "|源MAC: " + ep.getSourceAddress() + "\n";
-                textArea.setText(s);
-                System.out.println(s);
-            }
+            return false;
         }
+        //将抓的包的基本信息显示在列表上，返回信息的String[]形式
+        public  String[] getObj(Packet packet){
+            String[] data = new String[5];
+            if (packet != null&&new PacketAnalyze(packet).packetClass().size()>=3) {
+                Date d = new Date();
+                DateFormat df = new SimpleDateFormat("HH:mm:ss");
+                data[0]=df.format(d);
+                data[1]=new PacketAnalyze(packet).packetClass().get("源IP");
+                data[2]=new PacketAnalyze(packet).packetClass().get("目的IP");
+                data[3]=new PacketAnalyze(packet).packetClass().get("协议");
+                data[4]=String.valueOf(packet.len);
+            }
+            return data;
+        }
+    }
+
+
+
+  class PacketAnalyze {
+        Packet packet;
+        HashMap<String,String> att,att1;
+        PacketAnalyze(Packet packet){
+            this.packet = packet;
+        }
+        HashMap<String,String> packetClass(){
+            att1 = new HashMap<String,String>();
+            if(packet.getClass().equals(ICMPPacket.class)){
+                att1 = ICMPanalyze();
+            }else if(packet.getClass().equals(TCPPacket.class)){
+                att1 = TCPanalyze();
+            }else if(packet.getClass().equals(UDPPacket.class)){
+                att1 = UDPanalyze();
+            }
+            return att;
+        }
+        HashMap<String,String> IPanalyze(){
+            att = new HashMap<String,String>();
+            if(packet instanceof IPPacket){
+                IPPacket ippacket = (IPPacket) packet;
+                att.put("协议", "IP");
+                att.put("源IP", ippacket.src_ip.toString().substring(1, ippacket.src_ip.toString().length()));
+                att.put("目的IP", ippacket.dst_ip.toString().substring(1, ippacket.dst_ip.toString().length()));
+                att.put("TTL", String.valueOf(ippacket.hop_limit));
+                att.put("头长度", String.valueOf(ippacket.header.length));
+                att.put("是否有其他切片", String.valueOf(ippacket.more_frag));
+            }
+            return att;
+        }
+        HashMap<String,String> ICMPanalyze(){
+            att = new HashMap<String,String>();
+            ICMPPacket icmppacket = (ICMPPacket) packet;
+            att.put("协议", "ICMP");
+            att.put("源IP", icmppacket.src_ip.toString().substring(1, icmppacket.src_ip.toString().length()));
+            att.put("目的IP", icmppacket.dst_ip.toString().substring(1, icmppacket.dst_ip.toString().length()));
+            return att;
+        }
+        HashMap<String,String> TCPanalyze(){
+            att = new HashMap<String,String>();
+            TCPPacket tcppacket = (TCPPacket) packet;
+            EthernetPacket ethernetPacket=(EthernetPacket)packet.datalink;
+            att.put("协议", new String("TCP"));
+            att.put("源IP", tcppacket.src_ip.toString().substring(1, tcppacket.src_ip.toString().length()));
+            att.put("源端口", String.valueOf(tcppacket.src_port));
+            att.put("目的IP", tcppacket.dst_ip.toString().substring(1, tcppacket.dst_ip.toString().length()));
+            att.put("目的端口", String.valueOf(tcppacket.dst_port));
+            att.put("源MAC", ethernetPacket.getSourceAddress());
+            att.put("目的MAC", ethernetPacket.getDestinationAddress());
+            try {
+                att.put("数据", new String(tcppacket.data,"utf-8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            return att;
+        }
+        HashMap<String,String> UDPanalyze(){
+            att = new HashMap<String,String>();
+            UDPPacket udpppacket = (UDPPacket) packet;
+            EthernetPacket ethernetPacket=(EthernetPacket)packet.datalink;
+            att.put("协议", "UDP");
+            att.put("源IP", udpppacket.src_ip.toString().substring(1, udpppacket.src_ip.toString().length()));
+            att.put("源端口", String.valueOf(udpppacket.src_port));
+            att.put("目的IP", udpppacket.dst_ip.toString().substring(1, udpppacket.dst_ip.toString().length()));
+            att.put("目的端口", String.valueOf(udpppacket.dst_port));
+            att.put("源MAC", ethernetPacket.getSourceAddress());
+            att.put("目的MAC", ethernetPacket.getDestinationAddress());
+            try {
+                att.put("数据", new String(udpppacket.data,"utf-8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+
+            return att;
+        }
+    }
+
+    public class tablerow{
+        String time;
+        String sourceIP;
+        String destIP;
+        String protocol;
+        String length;
+
+        tablerow(String t, String s, String d, String p, String l){
+            this.time = t;
+            this.destIP = d;
+            this.sourceIP = s;
+            this.length = l;
+            this.protocol = p;
+        }
+
+        public String getTime() {
+            return time;
+        }
+
+        public String getSourceIP() {
+            return sourceIP;
+        }
+
+        public String getDestIP() {
+            return destIP;
+        }
+
+        public String getProtocol() {
+            return protocol;
+        }
+
+        public String getLength() {
+            return length;
+        }
+    }
+
+    public void test(){
+//        tablerow tr = new tablerow(rowData[0],rowData[1],rowData[2],rowData[3],rowData[4]);
+
+        tableColumn_time = new TableColumn<>();
+        tableColumn_sourceIP = new TableColumn<>();
+        tableColumn_destIP = new TableColumn<>();
+        tableColumn_protocol = new TableColumn<>();
+        tableColumn_length = new TableColumn<>();
+        tableColumn_length.setCellValueFactory(new PropertyValueFactory<>("length"));
+        tableColumn_time.setCellValueFactory(new PropertyValueFactory<>("time"));
+        tableColumn_sourceIP.setCellValueFactory(new PropertyValueFactory<>("sourceIP"));
+        tableColumn_destIP.setCellValueFactory(new PropertyValueFactory<>("destIP"));
+        tableColumn_protocol.setCellValueFactory(new PropertyValueFactory<>("protocol"));
+        tableColumn_length.setCellValueFactory(new PropertyValueFactory<>("length"));
+        tableColumn_time.setCellFactory(TextFieldTableCell.forTableColumn());
+        tableColumn_sourceIP.setCellFactory(TextFieldTableCell.forTableColumn());
+        tableColumn_destIP.setCellFactory(TextFieldTableCell.forTableColumn());
+        tableColumn_protocol.setCellFactory(TextFieldTableCell.forTableColumn());
+        tableColumn_length.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        tablerow tr = new tablerow("1aaaa","2bbbb","3cccc","4ddddd","5eeee");
+//        tableColumn_time.setCellValueFactory(new PropertyValueFactory<>("time"));
+
+        tableview.getItems().add(tr);
     }
 }
 
