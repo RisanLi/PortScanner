@@ -6,20 +6,18 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-
-import java.util.HashMap;
-import java.util.Map;
+import jpcap.JpcapCaptor;
+import jpcap.NetworkInterface;
 
 public class Main extends Application {
     static Stage stage;
     static Scene welcomeScene;
     static Scene portScannerScene;
     static Scene snifferScene;
-
-    public static Map<String,Integer> map = new HashMap<String, Integer>();
+    static NetworkInterface[] devices;
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
 
         FXMLLoader welcomeFxmlLoader = new FXMLLoader(getClass().getResource("../views/View_welcome.fxml"));
@@ -36,14 +34,12 @@ public class Main extends Application {
 
         stage.setTitle("网络课设-端口扫描工具");
         stage.setScene(welcomeScene);
-        stage.getIcons().add(new Image("file:"+System.getProperty("user.dir")+"\\images\\title.png"));
+        stage.getIcons().add(new Image("file:" + System.getProperty("user.dir") + "\\images\\title.png"));
         stage.show();
     }
 
     public static void main(String[] args) {
-        map.put("TCP",1);
-        map.put("UDP",2);
-        map.put("ICMP",3);
+        devices = JpcapCaptor.getDeviceList();
         launch(args);
     }
 }
