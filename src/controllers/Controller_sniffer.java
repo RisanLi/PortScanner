@@ -42,6 +42,7 @@ public class Controller_sniffer {
     public ComboBox<String> comboBox_net;
     public ComboBox<String> comboBox_protocol;
     private ExecutorService threadPool;
+    private static volatile boolean stop = false;
 
     /**
      * 获取网卡名
@@ -77,10 +78,19 @@ public class Controller_sniffer {
         String protocol = comboBox_protocol.getSelectionModel().getSelectedItem();
         //创建线程进行抓包
 
-        if (threadPool!=null)
-            threadPool.shutdownNow();
+        if (threadPool!=null && !threadPool.isTerminated()){
+            stop = true;
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("打算关闭之前线程！");
+            tableView.getItems().clear();
+        }
         threadPool = Executors.newCachedThreadPool();
         PacketCapture packetCapture = new PacketCapture(captor, protocol, tableView);
+        stop = false;
         threadPool.execute(packetCapture);
         threadPool.shutdown();
     }
@@ -104,7 +114,13 @@ public class Controller_sniffer {
                 //开启这个网卡设备
                 JpcapCaptor captor = JpcapCaptor.openDevice(device, 200, true, 20);
                 //无限循环进行抓包
-                captor.loopPacket(-1, new TestPacketReceiver(tableView, filterMess));
+                while(!stop){
+                    Packet packet = captor.getPacket();
+                    TestPacketReceiver testPacketReceiver = new TestPacketReceiver(tableView,filterMess,packet);
+                    testPacketReceiver.run();
+//                    captor.loopPacket(1, new TestPacketReceiver(tableView, filterMess));
+                }
+                Thread.currentThread().interrupt();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -112,19 +128,25 @@ public class Controller_sniffer {
     }
 
 
-    class TestPacketReceiver implements PacketReceiver {
+    class TestPacketReceiver implements Runnable {
         TableView<tableRow> tableView;                        //展示的视图控件
         String filterMess = "";                     //过滤的包
+        Packet packet;
         //ArrayList<Packet> packetList = new ArrayList<>();   //截获的包
 
         //抓包初始化
-        TestPacketReceiver(TableView<tableRow> tableView, String filterMess) {
+        TestPacketReceiver(TableView<tableRow> tableView, String filterMess,Packet packet) {
             this.tableView = tableView;
             this.filterMess = filterMess;
+            this.packet = packet;
         }
 
         @Override
-        public void receivePacket(Packet packet) {
+        public void run() {
+            receivePacket(packet);
+        }
+
+        void receivePacket(Packet packet) {
             if (packet != null && TestFilter(packet)) {       //TestFilter 检测包是否为ICMP，UDP，TCP
                 //packetList.add(packet);
                 showTable(packet);
@@ -134,9 +156,10 @@ public class Controller_sniffer {
         //将抓到包的信息添加到列表
         void showTable(Packet packet) {
             String[] rowData = getObj(packet);
-            //System.out.println(rowData[0]+" "+rowData[1]+" "+rowData[2]+" "+rowData[3]+" "+rowData[4]);
-            tableRow tmp = new tableRow(rowData[0], rowData[1], rowData[2], rowData[3], rowData[4]);
-            tableView.getItems().add(tmp);
+            if (rowData[0]!=null){
+                tableRow tmp = new tableRow(rowData[0], rowData[1], rowData[2], rowData[3], rowData[4]);
+                tableView.getItems().add(tmp);
+            }
         }
 
         //设置过滤规则
@@ -168,7 +191,7 @@ public class Controller_sniffer {
             String[] data = new String[6];
             if (packet != null) {
                 HashMap<String, String> att = new PacketAnalyze(packet).packetClass();
-                if (att.size() > 3) {
+                if (att!=null && att.size() > 3) {
                     Date d = new Date();
                     DateFormat df = new SimpleDateFormat("HH:mm:ss");
                     data[0] = df.format(d);

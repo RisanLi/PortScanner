@@ -1,11 +1,13 @@
 package controllers;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import jpcap.JpcapCaptor;
 import jpcap.NetworkInterface;
 
@@ -19,6 +21,12 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
+		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                System.exit(0);
+            }
+        });
 
         FXMLLoader welcomeFxmlLoader = new FXMLLoader(getClass().getResource("../views/View_welcome.fxml"));
         Parent welcomeRoot = welcomeFxmlLoader.load();
