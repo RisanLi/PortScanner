@@ -13,24 +13,6 @@
 
 <AnchorPane prefHeight="637.0" prefWidth="676.0" stylesheets="@../style/main.css" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Controller_portScanner">
     <children>
-        <RadioButton fx:id="radioButton_commonPort" layoutX="21.0" layoutY="106.0" mnemonicParsing="false" selected="true" text="常见端口扫描">
-            <toggleGroup>
-                <ToggleGroup fx:id="scanChoose" />
-            </toggleGroup>
-        </RadioButton>
-        <RadioButton fx:id="radioButton_continuousPort" layoutX="21.0" layoutY="170.0" mnemonicParsing="false" text="连续端口扫描" toggleGroup="$scanChoose" />
-        <TextField fx:id="textField_commonPort" layoutX="45.0" layoutY="135.0" prefHeight="30.0" prefWidth="568.0" text="21,22,23,25,26,69,80,110,143,443,465,1080,1158,1433,1521,2100,3306,3389,7001,8080,8081,8888,9080,9090,43958" />
-        <TextField fx:id="textField_startPort" layoutX="118.0" layoutY="199.0" prefHeight="23.0" prefWidth="66.0" text="80" />
-        <Label layoutX="45.0" layoutY="199.0" prefHeight="23.0" prefWidth="83.0" text="起始端口：" />
-        <Label layoutX="205.0" layoutY="199.0" prefHeight="23.0" prefWidth="83.0" text="结束端口：" />
-        <TextField fx:id="textField_endPort" layoutX="280.0" layoutY="199.0" prefHeight="23.0" prefWidth="66.0" text="443" />
-        <TextArea fx:id="textArea_scanProcess" editable="false" layoutX="55.0" layoutY="268.0" prefHeight="339.0" prefWidth="258.0" />
-        <Label layoutX="151.0" layoutY="238.0" prefHeight="20.0" prefWidth="66.0" text="扫描进度" />
-        <TextField fx:id="textField_IP" layoutX="115.0" layoutY="70.0" prefHeight="23.0" prefWidth="235.0" promptText="例：www.baidu.com" />
-        <Label layoutX="45.0" layoutY="70.0" prefHeight="23.0" prefWidth="83.0" text="网址/IP ：" />
-        <Label layoutX="427.0" layoutY="74.0" text="线程：" />
-        <TextField fx:id="textField_thread" layoutX="469.0" layoutY="70.0" prefHeight="23.0" prefWidth="50.0" text="5" />
-        <Button fx:id="button_start" layoutX="390.0" layoutY="195.0" mnemonicParsing="false" onMouseClicked="#startScan" prefHeight="30.0" prefWidth="91.0" text="开始扫描" />
         <MenuBar fx:id="menuBar" layoutX="21.0" layoutY="14.0" prefHeight="32.0" prefWidth="593.0">
             <menus>
                 <Menu fx:id="menu_menu" mnemonicParsing="false" text="    菜单    ">
@@ -50,6 +32,24 @@
                 </Menu>
             </menus>
         </MenuBar>
+        <RadioButton fx:id="radioButton_commonPort" layoutX="21.0" layoutY="106.0" mnemonicParsing="false" selected="true" text="常见端口扫描">
+            <toggleGroup>
+                <ToggleGroup fx:id="scanChoose" />
+            </toggleGroup>
+        </RadioButton>
+        <RadioButton fx:id="radioButton_continuousPort" layoutX="21.0" layoutY="170.0" mnemonicParsing="false" text="连续端口扫描" toggleGroup="$scanChoose" />
+        <TextField fx:id="textField_commonPort" layoutX="45.0" layoutY="135.0" prefHeight="30.0" prefWidth="568.0" text="21,22,23,25,26,69,80,110,143,443,465,1080,1158,1433,1521,2100,3306,3389,7001,8080,8081,8888,9080,9090,43958" />
+        <TextField fx:id="textField_startPort" layoutX="118.0" layoutY="199.0" prefHeight="23.0" prefWidth="66.0" text="80" />
+        <Label layoutX="45.0" layoutY="199.0" prefHeight="23.0" prefWidth="83.0" text="起始端口：" />
+        <Label layoutX="205.0" layoutY="199.0" prefHeight="23.0" prefWidth="83.0" text="结束端口：" />
+        <TextField fx:id="textField_endPort" layoutX="280.0" layoutY="199.0" prefHeight="23.0" prefWidth="66.0" text="443" />
+        <TextArea fx:id="textArea_scanProcess" editable="false" layoutX="55.0" layoutY="268.0" prefHeight="339.0" prefWidth="258.0" />
+        <Label layoutX="151.0" layoutY="238.0" prefHeight="20.0" prefWidth="66.0" text="扫描进度" />
+        <TextField fx:id="textField_IP" layoutX="115.0" layoutY="70.0" prefHeight="23.0" prefWidth="235.0" promptText="例：www.baidu.com" />
+        <Label layoutX="45.0" layoutY="70.0" prefHeight="23.0" prefWidth="83.0" text="网址/IP ：" />
+        <Label layoutX="427.0" layoutY="74.0" text="线程：" />
+        <TextField fx:id="textField_thread" layoutX="469.0" layoutY="70.0" prefHeight="23.0" prefWidth="50.0" text="5" />
+        <Button fx:id="button_start" layoutX="390.0" layoutY="195.0" mnemonicParsing="false" onMouseClicked="#startScan" prefHeight="30.0" prefWidth="91.0" text="开始扫描" />
         <TextArea fx:id="textArea_result" editable="false" layoutX="353.0" layoutY="268.0" prefHeight="339.0" prefWidth="258.0" />
         <Button fx:id="button_export" layoutX="506.0" layoutY="195.0" mnemonicParsing="false" onMouseClicked="#exportRes" prefHeight="30.0" prefWidth="91.0" text="导出" />
         <Label layoutX="449.0" layoutY="238.0" prefHeight="20.0" prefWidth="66.0" text="扫描结果" />

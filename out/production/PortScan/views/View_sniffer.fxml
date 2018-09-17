@@ -1,26 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"  prefHeight="476.0" prefWidth="711.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Controller_sniffer">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="476.0" prefWidth="711.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Controller_sniffer">
    <children>
-      <MenuBar fx:id="menu" prefHeight="31.0" prefWidth="711.0">
+      <MenuBar fx:id="menuBar" prefHeight="31.0" prefWidth="711.0">
         <menus>
-          <Menu mnemonicParsing="false" text="File">
+          <Menu fx:id="menu" mnemonicParsing="false" text="菜单">
             <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
+              <MenuItem fx:id="menuItem_startSniff" mnemonicParsing="false" onAction="#start" text="开始抓包" />
+                  <MenuItem fx:id="menuItem_sourceIP" mnemonicParsing="false" onAction="#selectSourceIP" text="源IP过滤" />
+                  <MenuItem fx:id="menuItem_destIP" mnemonicParsing="false" onAction="#selectDestIP" text="目的IP过滤" />
+                  <MenuItem fx:id="menu_back" mnemonicParsing="false" onAction="#backMain" text="退出" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
+          <Menu fx:id="about" mnemonicParsing="false" text="关于">
             <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem mnemonicParsing="false" text="About" />
+              <MenuItem fx:id="menuItem_author" mnemonicParsing="false" onAction="#getAuthor" text="作者" />
+                  <MenuItem fx:id="menuItem_connect" mnemonicParsing="false" onAction="#getConnect" text="联系方式" />
+                  <MenuItem fx:id="menuItem_version" mnemonicParsing="false" onAction="#getVersion" text="版本" />
+                  <MenuItem fx:id="menuItem_use" mnemonicParsing="false" onAction="#getUse" text="使用说明" />
             </items>
           </Menu>
         </menus>
@@ -34,10 +40,10 @@
             <TableColumn fx:id="tableColumn_length" prefWidth="111.0" text="长度" />
         </columns>
       </TableView>
-      <ComboBox fx:id="comboBox_net" layoutX="51.0" layoutY="365.0" prefWidth="150.0" promptText="           选择网卡" onMouseClicked="#selectNet"/>
-      <Button fx:id="button_sourceIP" layoutX="544.0" layoutY="359.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="140.0" text="源IP" />
-      <Button fx:id="button_destIP" layoutX="544.0" layoutY="395.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="140.0" text="目的IP" />
-      <Button fx:id="button_start" layoutX="336.0" layoutY="356.0" mnemonicParsing="false" prefHeight="69.0" prefWidth="124.0" text="开始" onMouseClicked="#start"/>
-      <ComboBox fx:id="comboBox_protocol" layoutX="51.0" layoutY="421.0" prefWidth="150.0" promptText="           筛选协议" onMouseClicked="#selectProtocol"/>
+      <ComboBox fx:id="comboBox_net" layoutX="33.0" layoutY="356.0" onMouseClicked="#selectNet" prefHeight="30.0" prefWidth="187.0" promptText="           选择网卡" />
+      <Button fx:id="button_sourceIP" layoutX="544.0" layoutY="351.0" mnemonicParsing="false" onMouseClicked="#selectSourceIP" prefHeight="40.0" prefWidth="140.0" text="源IP" />
+      <Button fx:id="button_destIP" layoutX="544.0" layoutY="405.0" mnemonicParsing="false" onMouseClicked="#selectDestIP" prefHeight="40.0" prefWidth="140.0" text="目的IP" />
+      <Button fx:id="button_start" layoutX="318.0" layoutY="365.0" mnemonicParsing="false" onMouseClicked="#start" prefHeight="69.0" prefWidth="124.0" text="开始" />
+      <ComboBox fx:id="comboBox_protocol" layoutX="33.0" layoutY="410.0" onMouseClicked="#selectProtocol" prefHeight="30.0" prefWidth="187.0" promptText="           筛选协议" />
    </children>
 </AnchorPane>

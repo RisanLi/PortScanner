@@ -2,13 +2,9 @@ package controllers;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import jpcap.JpcapCaptor;
 import jpcap.NetworkInterface;
-import jpcap.PacketReceiver;
 import jpcap.packet.*;
 
 import java.io.UnsupportedEncodingException;
@@ -20,6 +16,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static controllers.Main.devices;
+import static controllers.Main.stage;
+import static controllers.Main.welcomeScene;
+import static tools.Alert.alertInformation;
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,18 +28,29 @@ import static controllers.Main.devices;
  * Time: 16:27
  */
 public class Controller_sniffer {
-
+    public MenuBar menuBar;
+        public Menu menu;
+            public MenuItem menuItem_startSniff;
+            public MenuItem menuItem_sourceIP;
+            public MenuItem menuItem_destIP;
+            public MenuItem menu_back;
+        public Menu about;
+            public MenuItem menuItem_author;
+            public MenuItem menuItem_connect;
+            public MenuItem menuItem_version;
+            public MenuItem menuItem_use;
+    public TableView<tableRow> tableView;
+        public TableColumn<tableRow, String> tableColumn_time;
+        public TableColumn<tableRow, String> tableColumn_sourceIP;
+        public TableColumn<tableRow, String> tableColumn_destIP;
+        public TableColumn<tableRow, String> tableColumn_protocol;
+        public TableColumn<tableRow, String> tableColumn_length;
+    public ComboBox<String> comboBox_net;
+    public ComboBox<String> comboBox_protocol;
     public Button button_sourceIP;
     public Button button_destIP;
     public Button button_start;
-    public TableView<tableRow> tableView;
-    public TableColumn<tableRow, String> tableColumn_time;
-    public TableColumn<tableRow, String> tableColumn_sourceIP;
-    public TableColumn<tableRow, String> tableColumn_destIP;
-    public TableColumn<tableRow, String> tableColumn_protocol;
-    public TableColumn<tableRow, String> tableColumn_length;
-    public ComboBox<String> comboBox_net;
-    public ComboBox<String> comboBox_protocol;
+
     private ExecutorService threadPool;
     private static volatile boolean stop = false;
 
@@ -50,7 +60,7 @@ public class Controller_sniffer {
     public void selectNet() {
         comboBox_net.getItems().clear();
         for (jpcap.NetworkInterface i : devices) {
-            comboBox_net.getItems().add(i.name);
+            comboBox_net.getItems().add(i.description);
         }
     }
 
@@ -58,13 +68,14 @@ public class Controller_sniffer {
      * 选择获取协议包
      */
     public void selectProtocol() {
-        comboBox_protocol.getItems().addAll("TCP", "UDP", "ICMP");
+        comboBox_protocol.getItems().addAll("All","TCP", "UDP", "ICMP");
     }
 
     /**
      * 开启抓包模式
      */
     public void start() {
+        stop = false;
         //将数据和表格绑定
         tableColumn_time.setCellValueFactory(cellData -> cellData.getValue().timeProperty());
         tableColumn_sourceIP.setCellValueFactory(cellData -> cellData.getValue().sourceIPProperty());
@@ -76,12 +87,17 @@ public class Controller_sniffer {
         jpcap.NetworkInterface captor = devices[comboBox_net.getSelectionModel().getSelectedIndex()];
         //获取用户选择抓取得协议包
         String protocol = comboBox_protocol.getSelectionModel().getSelectedItem();
+        if (protocol==null){
+            alertInformation("提示:","协议选择:","请进行选择抓取的协议包");
+            return;
+        }
+
         //创建线程进行抓包
 
         if (threadPool!=null && !threadPool.isTerminated()){
             stop = true;
             try {
-                Thread.sleep(500);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -95,7 +111,9 @@ public class Controller_sniffer {
         threadPool.shutdown();
     }
 
-
+    /**
+     * 抓包线程
+     */
     class PacketCapture implements Runnable {
         NetworkInterface device;              //抓取的网卡
         TableView<tableRow> tableView;              //展示的视图控件
@@ -104,7 +122,7 @@ public class Controller_sniffer {
         //线程的初始化
         PacketCapture(NetworkInterface d, String protocol, TableView<tableRow> tv) {
             this.device = d;
-            if (protocol != null) this.filterMess = this.filterMess.concat(protocol);
+            this.filterMess = protocol;
             this.tableView = tv;
         }
 
@@ -127,7 +145,9 @@ public class Controller_sniffer {
         }
     }
 
-
+    /**
+     * 界面刷新线程
+     */
     class TestPacketReceiver implements Runnable {
         TableView<tableRow> tableView;                        //展示的视图控件
         String filterMess = "";                     //过滤的包
@@ -180,7 +200,7 @@ public class Controller_sniffer {
                         return true;
                     }
                     break;
-                case "":
+                case "All":
                     return true;
             }
             return false;
@@ -205,7 +225,9 @@ public class Controller_sniffer {
         }
     }
 
-
+    /**
+     * 抓包分析
+     */
     class PacketAnalyze {
         Packet packet;
         HashMap<String, String> att, att1;
@@ -226,19 +248,19 @@ public class Controller_sniffer {
             return att;
         }
 
-//        HashMap<String, String> IPAnalyze() {
-//            att = new HashMap<>();
-//            if (packet instanceof IPPacket) {
-//                IPPacket ippacket = (IPPacket) packet;
-//                att.put("协议", "IP");
-//                att.put("源IP", ippacket.src_ip.toString().substring(1, ippacket.src_ip.toString().length()));
-//                att.put("目的IP", ippacket.dst_ip.toString().substring(1, ippacket.dst_ip.toString().length()));
-//                att.put("TTL", String.valueOf(ippacket.hop_limit));
-//                att.put("头长度", String.valueOf(ippacket.header.length));
-//                att.put("是否有其他切片", String.valueOf(ippacket.more_frag));
-//            }
-//            return att;
-//        }
+/*        HashMap<String, String> IPAnalyze() {
+            att = new HashMap<>();
+            if (packet instanceof IPPacket) {
+                IPPacket ippacket = (IPPacket) packet;
+                att.put("协议", "IP");
+                att.put("源IP", ippacket.src_ip.toString().substring(1, ippacket.src_ip.toString().length()));
+                att.put("目的IP", ippacket.dst_ip.toString().substring(1, ippacket.dst_ip.toString().length()));
+                att.put("TTL", String.valueOf(ippacket.hop_limit));
+                att.put("头长度", String.valueOf(ippacket.header.length));
+                att.put("是否有其他切片", String.valueOf(ippacket.more_frag));
+            }
+            return att;
+        }*/
 
         HashMap<String, String> ICMPAnalyze() {
             att = new HashMap<>();
@@ -291,6 +313,9 @@ public class Controller_sniffer {
         }
     }
 
+    /**
+     * 表数据类
+     */
     class tableRow {
         private final StringProperty time;
         private final StringProperty sourceIP;
@@ -326,6 +351,37 @@ public class Controller_sniffer {
             return length;
         }
     }
+
+    /**
+     * 根据源IP进行筛选
+     */
+    public void selectSourceIP(){
+// TODO: 2018/9/17 进行源IP筛选
+    }
+
+    /**
+     * 进行目的IP筛选
+     */
+    public void selectDestIP(){
+// TODO: 2018/9/17 进行目的IP筛选
+    }
+
+    public void backMain(){
+        stop = true;
+        tableView.getItems().clear();
+        stage.setScene(welcomeScene);
+    }
+    public void getAuthor(){
+        alertInformation("作者","网络课程设计小组","Netzhangheng & RisanLi & WangShiJie");
+    }
+    public void getConnect(){
+        alertInformation("联系方式","Tel:","xxxxxxx6670");
+    }
+    public void getVersion(){
+        alertInformation("版本","测试版:","v0.1.0");
+    }
+    public void getUse(){
+        alertInformation("使用说明","帮助：","1. 请选择抓取的包！\n"+"2. 选择自己正在联网的网卡，否则可以没有包流过网卡\n"+"3. 仅用于学习交流。谢谢！！！");
+    }
+
 }
-
-

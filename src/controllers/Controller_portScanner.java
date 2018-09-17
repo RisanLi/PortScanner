@@ -19,6 +19,8 @@ import java.util.regex.Pattern;
 
 import static controllers.Main.stage;
 import static controllers.Main.welcomeScene;
+import static tools.Alert.alertError;
+import static tools.Alert.alertInformation;
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,16 +31,15 @@ import static controllers.Main.welcomeScene;
  */
 public class Controller_portScanner {
     public MenuBar menuBar;
-    public Menu menu_menu;
-    public MenuItem menuItem_startScan;
-    public MenuItem menuItem_export;
-    public MenuItem menuItem_exit;
-    public Menu menu_about;
-    public MenuItem menuItem_author;
-    public MenuItem menuItem_connect;
-    public MenuItem menuItem_version;
-    public MenuItem menuItem_help;
-
+        public Menu menu_menu;
+            public MenuItem menuItem_startScan;
+            public MenuItem menuItem_export;
+            public MenuItem menuItem_exit;
+        public Menu menu_about;
+            public MenuItem menuItem_author;
+            public MenuItem menuItem_connect;
+            public MenuItem menuItem_version;
+            public MenuItem menuItem_help;
     public TextField textField_IP;
     public TextField textField_thread;
     public ToggleGroup scanChoose;
@@ -51,7 +52,6 @@ public class Controller_portScanner {
     public Button button_export;
     public volatile TextArea textArea_scanProcess;
     public volatile TextArea textArea_result;
-
     private String currentDomain;
     private String currentPorts;
     private ExecutorService threadPool;
@@ -84,6 +84,9 @@ public class Controller_portScanner {
         return null;
     }
 
+    /**
+     * 启动扫描
+     */
     public void startScan() {
         currentDomain = getDomainString(textField_IP.getText().trim());     //获取域名并确认是否合法
         System.out.println("    域名：" + currentDomain);
@@ -151,6 +154,9 @@ public class Controller_portScanner {
         }
     }
 
+    /**
+     * 导出结果
+     */
     public void exportRes() {
         if (threadPool != null && !threadPool.isTerminated()) {
             alertInformation("结果提示", "正在扫描" + currentDomain + ":", "        请稍后再进行导出！");
@@ -174,7 +180,9 @@ public class Controller_portScanner {
         }
     }
 
-    //第一种线程池扫描
+    /**
+     * 第一种线程池扫描
+     */
     class ScanThread1 implements Runnable {
         private String domain;      // 待扫描的端口
         private int[] ports;        // 待扫描的端口的Set集合
@@ -219,7 +227,9 @@ public class Controller_portScanner {
         }
     }
 
-    //第二种线程池跑动
+    /**
+     * 第二种线程池跑动
+     */
     class ScanThread2 implements Runnable {
         private String domain;
         private int startPort = 80, endPort = 443; // 待扫描的端口的Set集合
@@ -301,9 +311,10 @@ public class Controller_portScanner {
     }
 
     public void backMain(){
+        textArea_result.clear();
+        textArea_scanProcess.clear();
         stage.setScene(welcomeScene);
     }
-
     public void getAuthor(){
         alertInformation("作者","网络课程设计小组","Netzhangheng & RisanLi & WangShiJie");
     }
@@ -315,27 +326,5 @@ public class Controller_portScanner {
     }
     public void getUse(){
         alertInformation("使用说明","帮助：","1. 注意输入域名和IP的规范！\n"+"2. 注意常用端口号的规范，端口号之间需要使用“，”进行分割！\n"+"3. 注意连续端口扫描时，起始端口号应小于等于结束端口号");
-    }
-
-    /**
-     * 弹出提示框
-     */
-    private void alertInformation(String title, String headerText, String contentText) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(headerText);
-        alert.setContentText(contentText);
-        alert.showAndWait();
-    }
-
-    /**
-     * 弹出错误提示框
-     */
-    private void alertError(String title, String headerText, String contentText) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(headerText);
-        alert.setContentText(contentText);
-        alert.showAndWait();
     }
 }
