@@ -1,10 +1,15 @@
 package tools;
 
-import javafx.scene.control.DialogPane;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
-import javax.xml.soap.Text;
-import java.beans.EventHandler;
+import static tools.Utils.getDomainString;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,6 +19,7 @@ import java.beans.EventHandler;
  * Time: 23:03
  */
 public class Alert {
+    public static String res;
     /**
      * 弹出提示框
      */
@@ -34,5 +40,37 @@ public class Alert {
         alert.setHeaderText(headerText);
         alert.setContentText(contentText);
         alert.showAndWait();
+    }
+
+    public static String display(String title, String message) {
+        res = null;
+        Stage stage = new Stage();          //设置一个舞台
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setTitle(title);
+
+        Label label = new Label();          //添加控件
+        label.setText(message);
+        TextField field = new TextField();
+        Button button = new Button("筛选");
+            button.setOnMouseClicked(event -> {
+                if (field.getText()==null){
+                    alertError("Error","输入错误","请输入IP！");
+                }else{
+                    res =  getDomainString(field.getText());
+                    if (res==null){
+                        alertError("Error","输入错误","请输入符合规范的IP！");
+                    }else{
+                        stage.close();
+                    }
+                }
+            });
+        VBox vBox = new VBox();             //添加布局
+        vBox.getChildren().addAll(label, field, button);
+//        vBox.setAlignment(Pos.BASELINE_LEFT);
+        stage.centerOnScreen();
+        Scene scene = new Scene(vBox, 150, 200);      //添加场景
+        stage.setScene(scene);      //舞台设置场景
+        stage.showAndWait();        //展示并只能使用该窗体
+        return res;
     }
 }

@@ -14,13 +14,12 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static controllers.Main.stage;
 import static controllers.Main.welcomeScene;
 import static tools.Alert.alertError;
 import static tools.Alert.alertInformation;
+import static tools.Utils.getDomainString;
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,15 +30,15 @@ import static tools.Alert.alertInformation;
  */
 public class Controller_portScanner {
     public MenuBar menuBar;
-        public Menu menu_menu;
-            public MenuItem menuItem_startScan;
-            public MenuItem menuItem_export;
-            public MenuItem menuItem_exit;
-        public Menu menu_about;
-            public MenuItem menuItem_author;
-            public MenuItem menuItem_connect;
-            public MenuItem menuItem_version;
-            public MenuItem menuItem_help;
+    public Menu menu_menu;
+    public MenuItem menuItem_startScan;
+    public MenuItem menuItem_export;
+    public MenuItem menuItem_exit;
+    public Menu menu_about;
+    public MenuItem menuItem_author;
+    public MenuItem menuItem_connect;
+    public MenuItem menuItem_version;
+    public MenuItem menuItem_help;
     public TextField textField_IP;
     public TextField textField_thread;
     public ToggleGroup scanChoose;
@@ -56,33 +55,6 @@ public class Controller_portScanner {
     private String currentPorts;
     private ExecutorService threadPool;
 
-    /**
-     * 根据输入的字符串提取出其中的域名字符串或者IP字符串，如：www.baidu.com或者baidu.com或者192.168.2.1
-     *
-     * @param str 输入的包含域名的字符串
-     * @return 域名或IP字符串
-     */
-    private static String getDomainString(String str) {
-        //先判断是不是IP
-        String reg = "^(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|[1-9])\\."
-                + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."
-                + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\."
-                + "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)$";
-        Pattern pattern = Pattern.compile(reg);
-        Matcher matcher = pattern.matcher(str);
-        if (matcher.find()) {
-            return matcher.group();
-        }
-        //不是则判断是不是域名
-        reg = "[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+";
-        pattern = Pattern.compile(reg);
-        matcher = pattern.matcher(str);
-        if (matcher.find()) {
-            return matcher.group();
-        }
-        //都不是就返回null
-        return null;
-    }
 
     /**
      * 启动扫描
@@ -310,21 +282,25 @@ public class Controller_portScanner {
         }
     }
 
-    public void backMain(){
+    public void backMain() {
         textArea_result.clear();
         textArea_scanProcess.clear();
         stage.setScene(welcomeScene);
     }
-    public void getAuthor(){
-        alertInformation("作者","网络课程设计小组","Netzhangheng & RisanLi & WangShiJie");
+
+    public void getAuthor() {
+        alertInformation("作者", "网络课程设计小组", "Netzhangheng & RisanLi & WangShiJie");
     }
-    public void getConnect(){
-        alertInformation("联系方式","Tel:","xxxxxxx6670");
+
+    public void getConnect() {
+        alertInformation("联系方式", "Tel:", "xxxxxxx6670");
     }
-    public void getVersion(){
-        alertInformation("版本","测试版:","v0.1.1");
+
+    public void getVersion() {
+        alertInformation("版本", "测试版:", "v0.1.1");
     }
-    public void getUse(){
-        alertInformation("使用说明","帮助：","1. 注意输入域名和IP的规范！\n"+"2. 注意常用端口号的规范，端口号之间需要使用“，”进行分割！\n"+"3. 注意连续端口扫描时，起始端口号应小于等于结束端口号");
+
+    public void getUse() {
+        alertInformation("使用说明", "帮助：", "1. 注意输入域名和IP的规范！\n" + "2. 注意常用端口号的规范，端口号之间需要使用“，”进行分割！\n" + "3. 注意连续端口扫描时，起始端口号应小于等于结束端口号");
     }
 }

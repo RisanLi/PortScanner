@@ -19,6 +19,7 @@ import static controllers.Main.devices;
 import static controllers.Main.stage;
 import static controllers.Main.welcomeScene;
 import static tools.Alert.alertInformation;
+import static tools.Alert.display;
 
 /**
  * Created with IntelliJ IDEA.
@@ -357,6 +358,8 @@ public class Controller_sniffer {
      */
     public void selectSourceIP(){
 // TODO: 2018/9/17 进行源IP筛选
+        String sourceIP = display("源IP查找","请输入源IP:");
+        //将sourceIP
     }
 
     /**
@@ -364,6 +367,7 @@ public class Controller_sniffer {
      */
     public void selectDestIP(){
 // TODO: 2018/9/17 进行目的IP筛选
+        String destIP = display("目的IP查找","请输入目的IP:");
     }
 
     public void backMain(){
